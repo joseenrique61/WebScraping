@@ -8,6 +8,12 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
+            SecondSolution();
+            Console.ReadLine();
+        }
+
+        private static void FirstSolution()
+        {
             HtmlWeb oWeb = new();
             HtmlDocument doc = oWeb.Load("https://holamundo.day/");
             IEnumerable<HtmlNode> nodes = doc.DocumentNode.CssSelect("article");
@@ -53,11 +59,44 @@ namespace WebScraping
                 }
             }
 
-            for (int i = 0; i < datos.Count;i++)
+            for (int i = 0; i < datos.Count; i++)
             {
                 Console.WriteLine($"{datos.Keys.ToList()[i]}: {datos.Values.ToList()[i]}");
             }
-            Console.ReadLine();
+        }
+
+        private static void SecondSolution()
+        {
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument doc = web.Load("https://holamundo.day/");
+
+            HtmlNode dateToPrintNode = doc.DocumentNode.SelectSingleNode("//html/body/div/div/div/div[2]/div/div/section[7]/div[2]/div/article/h1[1]");
+
+            Console.WriteLine("Agenda: ");
+
+            while (true)
+            {
+                if (dateToPrintNode == null)
+                {
+                    break;
+                }
+
+                if (dateToPrintNode.Name == "h1")
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(dateToPrintNode.InnerText.Remove(0, 6));
+                    dateToPrintNode = dateToPrintNode.NextSibling;
+                }
+                else if (dateToPrintNode.Name == "blockquote")
+                {
+                    Console.WriteLine(dateToPrintNode.InnerText);
+                    dateToPrintNode = dateToPrintNode.NextSibling;
+                }
+                else
+                {
+                    dateToPrintNode = dateToPrintNode.NextSibling;
+                }
+            }
         }
     }
 }
